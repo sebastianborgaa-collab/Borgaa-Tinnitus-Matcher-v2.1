@@ -1,0 +1,5 @@
+{
+  "name": "Borgaa Tinnitus Matcher v2",
+  "description": "Professional tinnitus frequency matching tool for clinicians using Web Audio API.",
+  "requestFramePermissions": []
+}
