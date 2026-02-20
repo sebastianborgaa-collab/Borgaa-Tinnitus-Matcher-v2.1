@@ -1,4 +1,4 @@
-export type WaveformType = 'sine' | 'square' | 'sawtooth' | 'triangle' | 'noise';
+export type WaveformType = 'sine' | 'square' | 'sawtooth' | 'triangle';
 
 export interface AudioState {
   isPlaying: boolean;

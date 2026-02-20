@@ -74,7 +74,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               value={frequency}
               onChange={handleSliderChange}
               className="w-full h-8 cursor-grab active:cursor-grabbing"
-              disabled={waveform === 'noise'}
             />
           </div>
 
@@ -82,7 +81,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
              <button
               onClick={() => onFrequencyChange(frequency - 1)}
               className="w-12 h-12 flex items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-300 transition-colors"
-              disabled={waveform === 'noise'}
             >
               <ChevronDown />
             </button>
@@ -93,7 +91,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 value={Math.round(frequency)}
                 onChange={(e) => onFrequencyChange(Number(e.target.value))}
                 className="w-full bg-transparent text-center text-4xl font-bold text-cyan-400 focus:outline-none"
-                disabled={waveform === 'noise'}
               />
               <span className="text-xs text-slate-500 font-bold tracking-widest mt-1">HERTZ</span>
             </div>
@@ -101,7 +98,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <button
               onClick={() => onFrequencyChange(frequency + 1)}
               className="w-12 h-12 flex items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 active:bg-slate-800 text-slate-300 transition-colors"
-              disabled={waveform === 'noise'}
             >
               <ChevronUp />
             </button>
@@ -116,7 +112,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           Waveform
         </h3>
         <div className="grid grid-cols-1 gap-3">
-          {(['sine', 'square', 'sawtooth', 'triangle', 'noise'] as WaveformType[]).map((type) => (
+          {(['sine', 'square', 'sawtooth', 'triangle'] as WaveformType[]).map((type) => (
             <button
               key={type}
               onClick={() => onWaveformChange(type)}
@@ -126,7 +122,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   : 'bg-slate-700/30 border-slate-700 text-slate-400 hover:bg-slate-700'
               }`}
             >
-              <span className="capitalize font-medium">{type === 'noise' ? 'White Noise' : type}</span>
+              <span className="capitalize font-medium">{type}</span>
               {waveform === type && <CheckCircle2 className="w-5 h-5" />}
             </button>
           ))}

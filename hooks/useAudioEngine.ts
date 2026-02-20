@@ -14,8 +14,6 @@ export const useAudioEngine = () => {
   const masterGainRef = useRef<GainNode | null>(null);
   const pannerRef = useRef<StereoPannerNode | null>(null);
   const oscRef = useRef<OscillatorNode | null>(null);
-  const noiseNodeRef = useRef<AudioBufferSourceNode | null>(null);
-  const noiseBufferRef = useRef<AudioBuffer | null>(null);
 
   // Initialize Audio Context (Lazy load on user interaction)
   const initAudio = useCallback(() => {
@@ -37,15 +35,6 @@ export const useAudioEngine = () => {
       // Signal Chain: Source -> Panner -> Gain -> Destination
       pannerNode.connect(gainNode);
       gainNode.connect(ctx.destination);
-
-      // Create White Noise Buffer (5 seconds loop is sufficient)
-      const bufferSize = ctx.sampleRate * 5; 
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-      noiseBufferRef.current = buffer;
     }
     
     if (audioCtxRef.current.state === 'suspended') {
@@ -61,13 +50,6 @@ export const useAudioEngine = () => {
       } catch (e) {}
       oscRef.current = null;
     }
-    if (noiseNodeRef.current) {
-      try {
-        noiseNodeRef.current.stop();
-        noiseNodeRef.current.disconnect();
-      } catch (e) {}
-      noiseNodeRef.current = null;
-    }
   }, []);
 
   const startSource = useCallback(() => {
@@ -77,21 +59,12 @@ export const useAudioEngine = () => {
 
     stopSource();
 
-    if (waveform === 'noise') {
-      const noise = ctx.createBufferSource();
-      noise.buffer = noiseBufferRef.current;
-      noise.loop = true;
-      noise.connect(panner);
-      noise.start();
-      noiseNodeRef.current = noise;
-    } else {
-      const osc = ctx.createOscillator();
-      osc.type = waveform;
-      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
-      osc.connect(panner);
-      osc.start();
-      oscRef.current = osc;
-    }
+    const osc = ctx.createOscillator();
+    osc.type = waveform;
+    osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+    osc.connect(panner);
+    osc.start();
+    oscRef.current = osc;
   }, [waveform, frequency, stopSource]);
 
   const togglePlay = useCallback(() => {
@@ -125,11 +98,11 @@ export const useAudioEngine = () => {
 
   // Handle real-time frequency updates
   useEffect(() => {
-    if (audioCtxRef.current && oscRef.current && waveform !== 'noise') {
+    if (audioCtxRef.current && oscRef.current) {
       const now = audioCtxRef.current.currentTime;
       oscRef.current.frequency.setTargetAtTime(frequency, now, 0.03);
     }
-  }, [frequency, waveform]);
+  }, [frequency]);
 
   // Handle real-time volume updates
   useEffect(() => {
