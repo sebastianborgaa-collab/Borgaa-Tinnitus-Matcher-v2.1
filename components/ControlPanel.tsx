@@ -64,7 +64,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               <span>{MIN_FREQ} Hz</span>
               <span>5 kHz</span>
               <span>10 kHz</span>
-              <span>15 kHz</span>
               <span>{MAX_FREQ / 1000} kHz</span>
             </div>
             <input
